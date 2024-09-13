@@ -13,6 +13,7 @@ async function getMediaStream() {
     try {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         localVideo.srcObject = localStream;
+        console.log("Local stream initialized.");
     } catch (error) {
         console.error("Error accessing media devices.", error);
         alert("Could not access your camera or microphone. Please check permissions.");
@@ -36,6 +37,7 @@ function setupPeer() {
         console.log("Incoming call from: ", incomingCall.peer);
         incomingCall.answer(localStream);
         incomingCall.on('stream', (remoteStream) => {
+            console.log("Received remote stream");
             remoteVideo.srcObject = remoteStream;
         });
     });
@@ -45,10 +47,11 @@ function setupPeer() {
 connectButton.addEventListener('click', () => {
     const remotePeerId = remotePeerIdInput.value;
 
-    if (remotePeerId) {
+    if (remotePeerId && localStream) {
         call = peer.call(remotePeerId, localStream);
 
         call.on('stream', (remoteStream) => {
+            console.log("Connected to remote peer");
             remoteVideo.srcObject = remoteStream;
         });
 
@@ -56,7 +59,7 @@ connectButton.addEventListener('click', () => {
             console.error("Call error:", err);
         });
     } else {
-        alert("Please enter a valid Peer ID.");
+        alert("Please enter a valid Peer ID and ensure your media devices are initialized.");
     }
 });
 
