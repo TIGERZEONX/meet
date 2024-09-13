@@ -1,27 +1,39 @@
 const localVideo = document.getElementById('localVideo');
 const remoteVideo = document.getElementById('remoteVideo');
-const muteBtn = document.getElementById('muteBtn');
-const stopVideoBtn = document.getElementById('stopVideoBtn');
-const leaveBtn = document.getElementById('leaveBtn');
+const peerIdElement = document.getElementById('peer-id');
+const remotePeerIdInput = document.getElementById('remotePeerId');
+const connectButton = document.getElementById('connectButton');
 
 let localStream;
 let peer;
 let call;
 
-const urlParams = new URLSearchParams(window.location.search);
-const meetingId = urlParams.get('meetingId');
-
-// Get video/audio stream
+// Get user media
 async function getMediaStream() {
-    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    localVideo.srcObject = localStream;
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localVideo.srcObject = localStream;
+    } catch (error) {
+        console.error("Error accessing media devices.", error);
+        alert("Could not access your camera or microphone. Please check permissions.");
+    }
 }
 
-// Initialize PeerJS and set up event listeners
+// Setup PeerJS
 function setupPeer() {
-    peer = new Peer(meetingId, { host: '0.peerjs.com', port: 443, secure: true });
+    peer = new Peer(undefined, { host: '0.peerjs.com', port: 443, secure: true });
+
+    peer.on('open', (id) => {
+        console.log(`My Peer ID is: ${id}`);
+        peerIdElement.textContent = `Your Peer ID: ${id}`;
+    });
+
+    peer.on('error', (err) => {
+        console.error("PeerJS error:", err);
+    });
 
     peer.on('call', (incomingCall) => {
+        console.log("Incoming call from: ", incomingCall.peer);
         incomingCall.answer(localStream);
         incomingCall.on('stream', (remoteStream) => {
             remoteVideo.srcObject = remoteStream;
@@ -29,41 +41,25 @@ function setupPeer() {
     });
 }
 
-getMediaStream().then(() => {
-    setupPeer();
+// Connect to another peer
+connectButton.addEventListener('click', () => {
+    const remotePeerId = remotePeerIdInput.value;
 
-    const peerId = meetingId;
+    if (remotePeerId) {
+        call = peer.call(remotePeerId, localStream);
 
-    if (peerId) {
-        const remotePeerId = prompt("Enter the remote user's peer ID to connect:");
-        if (remotePeerId) {
-            call = peer.call(remotePeerId, localStream);
-            call.on('stream', (remoteStream) => {
-                remoteVideo.srcObject = remoteStream;
-            });
-        }
+        call.on('stream', (remoteStream) => {
+            remoteVideo.srcObject = remoteStream;
+        });
+
+        call.on('error', (err) => {
+            console.error("Call error:", err);
+        });
+    } else {
+        alert("Please enter a valid Peer ID.");
     }
 });
 
-muteBtn.addEventListener('click', () => {
-    const audioTrack = localStream.getAudioTracks()[0];
-    audioTrack.enabled = !audioTrack.enabled;
-    muteBtn.textContent = audioTrack.enabled ? 'Mute' : 'Unmute';
-});
-
-stopVideoBtn.addEventListener('click', () => {
-    const videoTrack = localStream.getVideoTracks()[0];
-    videoTrack.enabled = !videoTrack.enabled;
-    stopVideoBtn.textContent = videoTrack.enabled ? 'Stop Video' : 'Start Video';
-});
-
-leaveBtn.addEventListener('click', () => {
-    call.close();
-    peer.destroy();
-    window.location.href = 'index.html';
-});
-// Show Peer ID when peer connection is open
-peer.on('open', function(id) {
-    console.log('My peer ID is: ' + id);
-    document.getElementById('peer-id').textContent = 'Your Peer ID: ' + id;
-});
+// Start the process
+getMediaStream();
+setupPeer();
