@@ -3,33 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Meet Clone</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Peer-to-Peer Video Call</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        video {
+            width: 45%;
+            height: auto;
+            border: 2px solid #ddd;
+            margin: 10px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Google Meet Clone</h1>
-        <input type="text" id="meetingId" placeholder="Enter meeting ID">
-        <div class="buttons">
-            <button id="createMeeting">Create New Meeting</button>
-            <button id="joinMeeting">Join Meeting</button>
-        </div>
+    <h1>Peer-to-Peer Video Call</h1>
+
+    <div>
+        <p id="peer-id"></p> <!-- Displays the current user's Peer ID -->
     </div>
 
-    <script>
-        document.getElementById('createMeeting').addEventListener('click', () => {
-            const randomId = Math.random().toString(36).substr(2, 9);
-            window.location.href = `meet.html?meetingId=${randomId}`;
-        });
+    <div>
+        <input type="text" id="remotePeerId" placeholder="Enter Peer ID to connect">
+        <button id="connectButton">Connect</button>
+    </div>
 
-        document.getElementById('joinMeeting').addEventListener('click', () => {
-            const meetingId = document.getElementById('meetingId').value;
-            if (meetingId) {
-                window.location.href = `meet.html?meetingId=${meetingId}`;
-            } else {
-                alert('Please enter a meeting ID.');
-            }
-        });
-    </script>
+    <div>
+        <video id="localVideo" autoplay muted></video>
+        <video id="remoteVideo" autoplay></video>
+    </div>
+
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <script src="meet.js"></script>
 </body>
 </html>
