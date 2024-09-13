@@ -45,7 +45,7 @@ function setupPeer() {
 
 // Connect to another peer
 connectButton.addEventListener('click', () => {
-    const remotePeerId = remotePeerIdInput.value;
+    const remotePeerId = remotePeerIdInput.value.trim();
 
     if (remotePeerId && localStream) {
         call = peer.call(remotePeerId, localStream);
