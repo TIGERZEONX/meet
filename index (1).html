@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Meet Clone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Google Meet Clone</h1>
+        <input type="text" id="meetingId" placeholder="Enter meeting ID">
+        <div class="buttons">
+            <button id="createMeeting">Create New Meeting</button>
+            <button id="joinMeeting">Join Meeting</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('createMeeting').addEventListener('click', () => {
+            const randomId = Math.random().toString(36).substr(2, 9);
+            window.location.href = `meet.html?meetingId=${randomId}`;
+        });
+
+        document.getElementById('joinMeeting').addEventListener('click', () => {
+            const meetingId = document.getElementById('meetingId').value;
+            if (meetingId) {
+                window.location.href = `meet.html?meetingId=${meetingId}`;
+            } else {
+                alert('Please enter a meeting ID.');
+            }
+        });
+    </script>
+</body>
+</html>
