@@ -62,3 +62,8 @@ leaveBtn.addEventListener('click', () => {
     peer.destroy();
     window.location.href = 'index.html';
 });
+// Show Peer ID when peer connection is open
+peer.on('open', function(id) {
+    console.log('My peer ID is: ' + id);
+    document.getElementById('peer-id').textContent = 'Your Peer ID: ' + id;
+});
