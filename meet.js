@@ -26,6 +26,7 @@ async function getMediaStream() {
 
 // Initialize PeerJS and display the Peer ID (meeting ID)
 function setupPeer() {
+    // Create a new Peer instance
     peer = new Peer(undefined, { host: '0.peerjs.com', port: 443, secure: true });
 
     // Display the Peer ID once the peer connection is open
