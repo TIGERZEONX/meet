@@ -6,21 +6,26 @@
     <title>Meeting Room</title>
     <link rel="stylesheet" href="style.css">
 </head>
-    <div>
-    <p id="peer-id">Your Peer ID (Meeting ID) will be displayed here.</p>
-</div>
-    <p id="peer-id"></p>
 <body>
+    <!-- Peer ID Display -->
+    <div>
+        <p id="peer-id">Your Peer ID (Meeting ID) will be displayed here.</p>
+    </div>
+
+    <!-- Video Containers -->
     <div class="video-container">
         <video id="localVideo" autoplay muted></video>
         <video id="remoteVideo" autoplay></video>
     </div>
+
+    <!-- Controls for Mute/Stop Video/Leave -->
     <div class="controls">
         <button id="muteBtn">Mute</button>
         <button id="stopVideoBtn">Stop Video</button>
         <button id="leaveBtn">Leave</button>
     </div>
 
+    <!-- PeerJS and Custom Script -->
     <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.1/dist/peerjs.min.js"></script>
     <script src="meet.js"></script>
 </body>
